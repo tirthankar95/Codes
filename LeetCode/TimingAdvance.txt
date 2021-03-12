@@ -1,0 +1,3 @@
+LTE.
+TA is a MAC CE.
+Time difference b/w PUSCH/PUCCH/SRS reception and the subframe time and can send a 'Timing advance' command to UE.
