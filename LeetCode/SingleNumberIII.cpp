@@ -2,18 +2,17 @@ class Solution {
 public:
     vector<int> singleNumber(vector<int>& nums) {
         int n=nums.size();
-        int sum=0;
+        int sum=0,diff=0;
         for(int i=0;i<n;i++)sum^=nums[i];
-        int diff=0;int mask=1;
         for(int i=0;i<32;i++)
         {
-            if((bool)(sum&mask)==1)
+            if(sum&1)
             {
                 diff=1<<i;
                 break;
             }
-            mask=mask<<1;
-        }//end of outer-for.
+            sum=sum>>1;
+        }
         vector<int> res(2);
         for(int i=0;i<n;i++)
         {
