@@ -94,8 +94,9 @@ public:
         return obj->found(letter);
     }
 };
- */const int mxSize0=1e4+1;
-const int mxSize1=1e4+1; // ideally it should be 26*2000
+ */
+const int mxSize0=1e4+1;
+const int mxSize1=4e4+1;
 struct node{
     node* children[26];
     bool isLeaf;  
@@ -169,3 +170,66 @@ public:
  * StreamChecker* obj = new StreamChecker(words);
  * bool param_1 = obj->query(letter);
  */
+
+/************************************************************************/
+struct Trie {
+    //Trie *t[26] = {};
+    int t[26] = {};
+    int b = 0;
+};
+static Trie A[444444];
+
+class StreamChecker {
+public:
+    int root;
+    int ai;
+    int x;
+    deque<int> d;
+    int GetAi() {
+        memset(&(A[ai]), 0, sizeof(A[ai]));
+        return ai++;
+    }
+    
+    StreamChecker(vector<string>& ws) {
+        // TODO: use hash
+        ai = 0;
+        root = GetAi();
+        for (auto& s : ws) {
+            auto p = &(A[root]);
+            int i = 0;
+            for (int j = s.size() - 1; j >= 0; j--) {
+                i = s[j] - 'a';
+                if (!p->t[i]) {
+                    p->t[i] = GetAi();
+                }
+                if (j == 0)
+                    p->b |= 1 << i;
+                p = &(A[p->t[i]]);
+            }
+        }
+    }
+    
+    bool query(char l) {
+        d.push_front(l - 'a');
+        if (d.size() > x)
+            d.pop_back();
+        auto p = &(A[root]);
+        for (auto i : d)
+            if (!p->t[i])
+                return false;
+            else if (p->b & (1 << i))
+                return true;
+            else
+                p = &(A[p->t[i]]);
+        return false;
+    }
+};
+static const auto speedup = []() {
+std::ios::sync_with_stdio(false); std::cin.tie(nullptr); return 0;
+}();
+/**
+ * Your StreamChecker object will be instantiated and called as such:
+ * StreamChecker* obj = new StreamChecker(words);
+ * bool param_1 = obj->query(letter);
+ */
+/************************************************************************/
