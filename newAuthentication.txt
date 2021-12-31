@@ -1,3 +1,4 @@
 Step 1: Go to github.com/settings -> Developer settings
 Step 2: Generate new token by checking all the boxes i.e. by giving all access permissions.
-Step 3: Go to Credential Manager -> Windows Credentials -> modify the github.com password with the new token. 
+Step 3: Go to Credential Manager -> Windows Credentials -> modify the github.com password with the new token.
+Step 4: Click "Add a generic credential" if the old credential is not visible. In the first blank fill -> git:https://github.com/
