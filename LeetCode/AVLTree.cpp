@@ -18,34 +18,35 @@ class AVLTree{
 		}
 	};
 	node* root;
+	inline int gH(node* root){
+	    if(!root)return 0;
+	    return root->height;
+	}
 	node* leftRotate(node* src){
 		node* R=src->right; 
 		src->right=R->left;
 		R->left=src;
-		R->height=1+max(R->left->height,R->right->height);	
-		src->height=1+max(src->left->height,src->right->height);
+		src->height=1+max(gH(src->left),gH(src->right));
+		R->height=1+max(gH(R->left),gH(R->right));	
 		return R;
 	}
 	node* rightRotate(node* src){
 		node* L=src->left;
 		src->left=L->right;
 		L->right=src;
-		src->height=1+max(src->left->height,src->right->height);
-		L->height=1+max(L->left->height,L->right->height);	
+		src->height=1+max(gH(src->left),gH(src->right));
+		L->height=1+max(gH(L->left),gH(L->right));	
 		return L;	
 	}
 	node* insertUtil(node* src,int value){
 		if(!src)
 			return (new node(value,1));
-		int lh=0,rh=0;
-		if(src->value>=value){
+		if(src->value>=value)
 			src->left=insertUtil(src->left,value);
-			lh=src->left->height;
-		}
-		else{
+		else
 			src->right=insertUtil(src->right,value);
-			rh=src->right->height;
-		}
+		int lh=gH(src->left);
+		int rh=gH(src->right);
 		src->height=1+max(lh,rh);
 		//Balancing Act.
 		int delta=abs(lh-rh);
@@ -53,15 +54,15 @@ class AVLTree{
 			return src;
 		else{
 			//Left Left case ~ Right Rotate.[Diagram Helps]
-			if(lh>rh && src->left->left->height>src->left->right->height)
+			if(lh>rh && src->left->value>value)
 				return rightRotate(src);
 			//Left Right case ~ Left|Right Rotate.
-			else if(lh>rh && src->left->left->height<src->left->right->height){
+			else if(lh>rh && src->left->value<value){
 				src->left=leftRotate(src->left);
 				return rightRotate(src);
 			}
 			//Left Right case ~ Right|Lefft Rotate.
-			else if(rh>lh && src->left->left->height<src->left->right->height){
+			else if(rh>lh && src->right->value>value){
 				src->right=rightRotate(src->right);
 				return leftRotate(src);
 			}
@@ -130,19 +131,44 @@ public :
 	}
 };
 
-#define MAXN (3)
+#define MAXN (5)
 #define LIMIT (100)
-//Driver Function.
+//Driver Function For Testing.
 int main(){
-	AVLTree obj;
+	AVLTree t1,t2,t3;
+//Tree 1.
 	for(int i=0;i<MAXN;i++)
-		obj.insert_(i%LIMIT);
-	obj.inorder_();
-	printf("isPresent[67]-%d\n",obj.find_(67));
-	printf("isPresent[10]-%d\n",obj.find_(10));
-	if(obj.verify())
-		printf("VERIFIED.\n");
+		t1.insert_(i%LIMIT);
+	t1.inorder_();
+	printf("isPresent[67]-%d\n",t1.find_(67));
+	printf("isPresent[10]-%d\n",t1.find_(10));
+	if(t1.verify())
+		printf("t1 VERIFIED.\n");
 	else
-		printf("NOT VERIFIED.\n");
+		printf("t1 NOT VERIFIED.\n");
+//Tree 2
+	printf("\n\n");
+	for(int i=MAXN-1;i>=0;i--)
+		t2.insert_(i%LIMIT);
+	t2.inorder_();
+	printf("isPresent[67]-%d\n",t2.find_(67));
+	printf("isPresent[10]-%d\n",t2.find_(10));
+	if(t2.verify())
+		printf("t2 VERIFIED.\n");
+	else
+		printf("t2 NOT VERIFIED.\n");
+//Tree 3
+	printf("\n\n");
+	int data[5]={5,1,8,2,3};
+	int sz=sizeof(data)/sizeof(data[0]);
+	for(int i=0;i<sz;i++)
+		t3.insert_(data[i]);
+	t3.inorder_();
+	printf("isPresent[67]-%d\n",t3.find_(data[0]));
+	printf("isPresent[10]-%d\n",t3.find_(data[4]));
+	if(t3.verify())
+		printf("t3 VERIFIED.\n");
+	else
+		printf("t3 NOT VERIFIED.\n");
 	return 0;
 }
