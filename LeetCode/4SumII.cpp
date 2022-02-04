@@ -16,3 +16,20 @@ public:
         return cnt;
     }
 };
+/* 2nd attempt */
+typedef vector<int> vi;
+typedef pair<int,int> ii;
+class Solution {
+public:
+    int fourSumCount(vi& nums1,vi& nums2,vi& nums3,vi& nums4) {
+        unordered_map<int,int> hashMap;
+        int ans=0,n=nums1.size();
+        for(int i=0;i<n;i++)
+            for(int j=0;j<n;j++)
+                hashMap[(nums1[i]+nums2[j])]++;
+        for(int i=0;i<n;i++)
+            for(int j=0;j<n;j++)
+                ans+=hashMap[-(nums3[i]+nums4[j])];
+        return ans;
+    }
+};
