@@ -1,0 +1,2 @@
+https://www.tutorialspoint.com/gnu_debugger/gdb_commands.htm
+https://www.cse.unsw.edu.au/~learn/debugging/modules/gdb_watch_display/
