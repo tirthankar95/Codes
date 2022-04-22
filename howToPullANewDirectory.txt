@@ -1,4 +1,4 @@
  1. First you need to tell git about yourself. 
- "git config --global github.user YOUR_USERNAME"
- "git config --global github.token YOUR_TOKEN"
- 
+"git config --global github.user YOUR_USERNAME"
+"git config --global github.token YOUR_TOKEN"
+"git config --global user.email tirthankarmittra@gmail.com" 
