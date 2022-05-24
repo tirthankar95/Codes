@@ -1,46 +1,51 @@
-typedef pair<int,int> ii;
-typedef vector<ii> vii;
-const int dim1=601;
-const int dim2=101;
-int dp[dim1][dim2][dim2];
+//#define DBG
+const int mxSize1=6e2+1;
+const int mxSize2=1e2+1;
+int dp[mxSize1][mxSize2][mxSize2];
 
 class Solution {
-public:
-    int findMaxForm(vector<string>& strs, int m, int n) {
-        int N=strs.size();
-        vii  count(N);
-        for(int i=0;i<N;i++)
-        {
-            int one=0;
-            for(int j=0;j<strs[i].length();j++)
-                if(strs[i][j]=='1')one++;
-            count[i]=ii(strs[i].length()-one,one);
-        }
-        for(int i=0;i<=N;i++)
-        {
-            for(int j=0;j<=m;j++)
-            {
-                for(int k=0;k<=n;k++)
+    void init(int a,int b,int c){
+        for(int i=0;i<=a;i++){
+            for(int j=0;j<=b;j++){
+                for(int k=0;k<=c;k++)
                     dp[i][j][k]=0;
             }
-        }//end of outer-i.
-        int tmp;
-        for(int i=1;i<=N;i++)
-        {
-            for(int j=0;j<=m;j++)
+        }//
+    }
+public:
+    int findMaxForm(vector<string>& strs, int m, int n) {
+        int dim0=strs.size();
+        int dim1=m; // zeros.
+        int dim2=n; // ones.
+        init(dim0,dim1,dim2);
+        int ones,zeros;
+        for(int i=0;i<dim0;i++){
+            zeros=0;
+            for(int j=0;j<strs[i].length();j++)
+                if(strs[i][j]=='0')zeros++;
+            ones=strs[i].length()-zeros;
+            for(int j0=0;j0<=dim1;j0++)
             {
-                for(int k=0;k<=n;k++)
+                for(int j1=0;j1<=dim2;j1++)
                 {
-                    if(count[i-1].first>j || count[i-1].second>k)
-                        dp[i][j][k]=max(dp[i-1][j][k],dp[i][j][k]);
-                    else
-                    {
-                        tmp=dp[i-1][j-count[i-1].first][k-count[i-1].second];
-                        dp[i][j][k]=max(max(dp[i-1][j][k],1+tmp),dp[i][j][k]);    
-                    }
-                }//k.
-            }//j.
-        }//i.
-        return dp[N][m][n]; 
+                    if(zeros<=j0 && ones<=j1)
+                        dp[i+1][j0][j1]=max(dp[i][j0][j1],1+dp[i][j0-zeros][j1-ones]);
+                    else 
+                        dp[i+1][j0][j1]=dp[i][j0][j1];
+                }
+            }//end of js.
+        }//end of i.
+#ifdef DBG
+        for(int i=0;i<=dim0;i++){
+            for(int j=0;j<=dim1;j++){
+                for(int k=0;k<=dim2;k++)
+                    cout<<dp[i][j][k]<<" ";
+                cout<<endl;
+            }
+            cout<<endl;
+        }//
+        cout<<endl;
+#endif
+        return dp[dim0][dim1][dim2];
     }
 };
