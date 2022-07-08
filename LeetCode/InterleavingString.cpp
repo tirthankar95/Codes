@@ -1,23 +1,32 @@
+const int mxSize=1e2+1;
+int dp[mxSize][mxSize];
+
 class Solution {
     int n1,n2,n3;
-    bool fn(string s1,int i1,string s2,int i2,string s3,int i3){
-        if(i3==n3 && i2==n2 && i1==n1)
-            return true;
+    bool fn(string s1,string s2,string s3,int ptr1,int ptr2,int ptr3){
+        if(ptr1==n1 && ptr2==n2 && ptr3==n3)
+            return (dp[ptr1][ptr2]=true);
+        if(dp[ptr1][ptr2]!=-1)return dp[ptr1][ptr2];
         bool res=false;
-        if(i2<n2 && s3[i3]==s2[i2]){
-            res=fn(s1,i1,s2,i2+1,s3,i3+1);
-        }
-        if(i1<n1 && s3[i3]==s1[i1]){
-            res|=fn(s1,i1+1,s2,i2,s3,i3+1);
-        }
-        return res;        
+        if(ptr1<n1 && s3[ptr3]==s1[ptr1])
+            res=fn(s1,s2,s3,ptr1+1,ptr2,ptr3+1);
+        if(!res && ptr2<n2 && s3[ptr3]==s2[ptr2])
+            res=fn(s1,s2,s3,ptr1,ptr2+1,ptr3+1);
+        return (dp[ptr1][ptr2]=res);
     }
 public:
     bool isInterleave(string s1, string s2, string s3) {
-        n1=s1.length(),n2=s2.length(),n3=s3.length();
-        if(n1+n2!=n3)
-            return false;
-        return fn(s1,0,s2,0,s3,0);
+        n1=s1.length();
+        n2=s2.length();
+        n3=s3.length();
+        int n=max(n1,n2);
+        for(int i=0;i<=n;i++)
+        {
+            for(int j=0;j<=n;j++)
+                dp[i][j]=-1;
+        }//init array.
+        if(n3!=(n1+n2))return false;
+        return fn(s1,s2,s3,0,0,0);
     }
 };
 //#define DBG
