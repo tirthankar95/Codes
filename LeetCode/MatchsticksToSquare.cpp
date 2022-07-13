@@ -1,56 +1,65 @@
-typedef long long ll;
+//TLE.
 typedef vector<int> vi;
-typedef vector<ll> vll;
 class Solution {
-    int part;
-    int N;
-    vll sol;
-    void select(int start,int sum,vi& matchsticks,vector<bool>& isUsed)
-    {
-        if(sum==part)
-        {
-            ll flag=0;
-            for(int i=0;i<N;i++)
-            {
-                if(isUsed[i])
-                    flag|=((ll)1<<i);
-            }
-            sol.push_back(flag);
-            return;
-        }
-        if(start>=N)return;
-        isUsed[start]=true;
-        select(start+1,sum+matchsticks[start],matchsticks,isUsed);
-        isUsed[start]=false;
-        select(start+1,sum,matchsticks,isUsed);
+    int n;
+    int side;
+    bool fn(vi& arr,int s1,int s2,int s3,int lb){
+        if(s1==side && s2==side && s3==side)return true;
+        if(s1>side || s2>side || s3>side || lb>=n)return false;   
+        if(fn(arr,s1+arr[lb],s2,s3,lb+1))return true;
+        if(fn(arr,s1,s2+arr[lb],s3,lb+1))return true;
+        if(fn(arr,s1,s2,s3+arr[lb],lb+1))return true;
+        if(fn(arr,s1,s2,s3,lb+1))return true;
+        return false;
     }
 public:
     bool makesquare(vector<int>& matchsticks) {
-        int n=matchsticks.size();
-        this->N=n;sol.clear();
-        vector<bool> isUsed(n,false);
-        ll sum=0;
+        n=matchsticks.size();
+        int sum=0;
         for(int i=0;i<n;i++)
-            sum+=(ll)(matchsticks[i]);
-        if(sum%4!=0)return false;
-        this->part=sum/4;
-        select(0,0,matchsticks,isUsed);
-        int m=sol.size();
-        ll tmp=((ll)1<<N)-1;
-        for(int i=0;i<m;i++)
+            sum+=matchsticks[i];
+        if(sum%4)return false;
+        side=sum/4;
+        return fn(matchsticks,0,0,0,0);
+    }
+};
+
+//Will work.
+typedef vector<int> vi;
+class Solution {
+    int n;
+    int side;
+    vi sol;
+    void fn(vi& arr,int s1,int flag,int lb){
+        if(s1==side)
         {
-            for(int j=i+1;j<m;j++)
-            {
-                if((sol[i]&sol[j])!=0)continue;
-                for(int k=j+1;k<m;k++)
-                {
-                    if(((sol[i]|sol[j])&sol[k])!=0)continue;
-                    for(int l=k+1;l<m;l++)
-                        if(((sol[i]|sol[j]|sol[k])&sol[l])==0 && (sol[i]|sol[j]|sol[k]|sol[l])==tmp)
-                            return true;
-                }//end of for-k.
-            }//end of for-j.
-        }//end of for i.
+            sol.push_back(flag);
+            return;
+        }
+        if(s1>side || lb>=n)return;   
+        fn(arr,s1+arr[lb],(flag|(1<<lb)),lb+1);
+        fn(arr,s1,flag,lb+1);
+    }
+public:
+    bool makesquare(vector<int>& matchsticks) {
+        n=matchsticks.size();
+        int sum=0;
+        for(int i=0;i<n;i++)
+            sum+=matchsticks[i];
+        if(sum%4)return false;
+        side=sum/4;
+        sol.clear();
+        fn(matchsticks,0,0,0);
+        int m=sol.size();
+        for(int i=0;i<m;i++){
+            for(int j=i+1;j<m;j++){
+                if(sol[i]&sol[j])continue;
+                for(int k=j+1;k<m;k++){
+                    if(sol[i]&sol[k] || sol[j]&sol[k])continue;
+                    return true;
+                }//k
+            }//j
+        }//i
         return false;
     }
 };
