@@ -1,16 +1,31 @@
+typedef long long ll;
+const int MOD=2e9+1;
+const int mxSize=100;
+ll dp[mxSize][mxSize];
+bool first=true;
+
 class Solution {
+    void init(){
+        ll var0,var1;
+        for(int i=0;i<mxSize;i++){
+            for(int j=0;j<mxSize;j++){
+                dp[i][j]=0;
+                var0=(i-1>=0)?dp[i-1][j]:0;
+                var1=(j-1>=0)?dp[i][j-1]:0;
+                if(i==0 && j==0){
+                    dp[i][j]=1;
+                    continue;
+                }
+                dp[i][j]=(var0+var1)%MOD;
+            }
+        }
+    }
 public:
-    int uniquePaths(int R, int C) {
-        vector<vector<int>> dist(R,vector<int>(C,0));
-        dist[0][0]=1;
-        int a,b;
-        for(int i=0;i<R;i++){
-            for(int j=0;j<C;j++){
-                a=(i-1<0)?0:dist[i-1][j];
-                b=(j-1<0)?0:dist[i][j-1];
-                dist[i][j]+=(a+b);
-            }//end of j.
-        }//end of i.
-        return dist[R-1][C-1];
+    int uniquePaths(int m, int n) {
+        if(first){
+            first=false;
+            init();
+        }
+        return dp[m-1][n-1];
     }
 };
